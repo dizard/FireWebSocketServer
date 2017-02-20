@@ -1,0 +1,16 @@
+{
+  "name": "Socket",
+  "dependencies": {
+    "debug": "2.3.3",
+    "async": "*",
+    "cookie": "*",
+    "ioredis": "*",
+    "node-uuid": "*",
+    "redis": "*",
+    "sockjs": "*",
+    "sockjs-client": "*",
+    "winston": "*",
+    "sockjs-client-ws": "*",
+    "json-web-token": "*"
+  }
+}
