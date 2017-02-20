@@ -3,19 +3,49 @@ const Redis = require('ioredis');
 const JWT = require('json-web-token');
 const debug = require('debug')('WS');
 
-const RedisClient = new Redis({
-    port: 6379,
-    host: "127.0.0.1",
-    password: "dizardKom@cherS",
-    family: 4
-});
+const Config = require('./config.js');
+
+const RedisClient = new Redis(Config.redis);
 
 const Store = {
     Connections: [],
     NS: {}, // Name spaces
     NS_USER: {}, // Name spaces - [siteId][userId][conn.id] = conn
     SecretKeys: {},
-    NS_CHANNEL_USER : {} // Name spaces - [siteId][channel][userId][conn.id] = conn
+    NS_CHANNEL_USER : {}, // Name spaces - [siteId][channel][userId][conn.id] = conn
+
+
+    save : function(siteId, channel, data, userId, ttl) {
+        debug('Store.save siteId:%s, channel:%s, data:%o, userId:%s', siteId, channel, data, userId);
+
+        let key = 'LaWS_Server:store:'+siteId+':'+channel;
+        if (userId) {
+            key = 'LaWS_Server:store:'+siteId+':'+userId+':'+channel;
+        }
+        RedisClient.set(key, JSON.stringify(data));
+        if (ttl) {
+            RedisClient.expire(key, Number(ttl));
+        }
+    },
+    load : function(siteId, channel, userId, clb) {
+        debug('Store.load siteId:%s, channel:%s, userId:%s', siteId, channel, userId);
+        let key = 'LaWS_Server:store:'+siteId+':'+channel;
+        if (userId) {
+            key = 'LaWS_Server:store:'+siteId+':'+userId+':'+channel;
+        }
+        RedisClient.get(key, (err, result) => {
+            if (err) return clb(null);
+            if (result===null) return clb(null);
+            return clb(JSON.parse(result));
+        });
+    },
+    delete : function(siteId, channel, userId) {
+        let key = 'LaWS_Server:store:'+siteId+':'+channel;
+        if (userId) {
+            key = 'LaWS_Server:store:'+siteId+':'+userId+':'+channel;
+        }
+        RedisClient.del(key);
+    }
 };
 
 // Make Socket server for receiving command
@@ -40,7 +70,7 @@ const http = require('http');
 const SockJs = require('sockjs');
 const WS_Server = SockJs.createServer();
 
-WS_Server.installHandlers(http.createServer().listen(8080, '127.0.0.1'), {
+WS_Server.installHandlers(http.createServer().listen(Config.portWS, Config.hostWS), {
     prefix: '/socket', log: function logger(severity, message) {
         if (severity == "error") console.error(message);
     }
@@ -140,6 +170,15 @@ WS_Server.on('connection', (connection) => {
         debug('subscribe %s',channel);
         if(channel[0]=='#') return ;
         conn.join(channel);
+
+        if(channel[0]=='@') {
+            return Store.load(conn.siteId, channel, conn.userId, (data) => {
+                conn.write(channel, data);
+            })
+        }
+        return Store.load(conn.siteId, channel, null, (data) => {
+            conn.write(channel, data);
+        })
     });
 
     conn.on('auth', (data) => {
@@ -189,36 +228,24 @@ WS_Server.sendToChannel = (siteId, channel, data, params) => {
     });
 };
 WS_Server.setBaseState = (siteId, channel, data, params) => {
-    debug('setBaseState: siteId:%s channel:%s data:%s params:%o', siteId, channel, data, params);
+    debug('setBaseState: siteId:%s channel:%s data:%o params:%o', siteId, channel, data, params);
     if (data===null) {
-        RedisClient.del(key);
+        Store.delete(siteId, channel, params.userId);
     }else{
-        let key = 'LaWS_Server:store:'+siteId+':'+channel;
-        if (params.userId) {
-            key = 'LaWS_Server:store:'+siteId+':'+params.userId+':'+channel;
-        }
-        RedisClient.set(key, JSON.stringify(data));
-        if (params.ttl) {
-            RedisClient.expire(key, Number(params.ttl));
-        }
+        Store.save(siteId, channel, data, params.userId, params.ttl);
     }
-
     if (params.emit) {
         WS_Server.sendToChannel(siteId, channel, data, params);
     }
 };
 WS_Server.getBaseState = (siteId, channel, params, clb) => {
-    let key = 'LaWS_Server:store:'+siteId+':'+channel;
-    if (params.userId) {
-        key = 'LaWS_Server:store:'+siteId+':'+params.userId+':'+channel;
-    }
-    RedisClient.get(key, (err, result) => {
-        if (err) return null;
-        return clb(JSON.parse(result));
+    Store.load(siteId, channel, params.userId, (result) => {
+        return clb(result);
     });
 };
 WS_Server.channelInfo = (siteId, channel, clb) => {
     // TODO
+    return clb('todo');
 };
 
 
@@ -336,4 +363,4 @@ const NET_Server = require('net').createServer(function (sock) {
     }
 }).on('listening', function () {
     console.log('STARTED SUCCESS', this.address());
-}).listen(8085, '127.0.0.1');
+}).listen(Config.portNET, Config.hostNET);
