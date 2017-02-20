@@ -277,7 +277,7 @@ const NET_Server = require('net').createServer(function (sock) {
                     if (oData.action == 'registerNameSpace') {
                         if (!oData.hasOwnProperty('name')) return sendData(sock, {'success' : false, reason : 'Need name'});
                         if (!oData.hasOwnProperty('key')) return sendData(sock, {'success' : false, reason : 'Need key'});
-                        if (oData.key!='AdfoqDaPdVkamHdj') return sendData(sock, {'success' : false, reason : 'Invalid key'});
+                        if (oData.key!=Config.secretKey) return sendData(sock, {'success' : false, reason : 'Invalid key'});
 
                         return RedisClient.exists('LaWS_Server:name_spaces:'+oData.name, function(err, res) {
                             if (err) return sendData(sock, {'success' : false, reason : 'Error store, try latter...'});
