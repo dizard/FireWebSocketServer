@@ -22,25 +22,25 @@ Fire Web Socket is a WebSocket server based on NodeJs
 
 С этого начинается работа с сервером, мы региструем свой NameSpace и работаем в нем.
 
-```JSON
+```javascript
 {
-  action : 'registerNameSpace',
-  name : 'name NameSpace',
-  key : 'secret key'
+  "action" : 'registerNameSpace',
+  "name" : 'name NameSpace',
+  "key" : 'secret key'
 }
 ```
 - key - Секретный ключ задается в конфиге сервера
 - name - Название Name Space
 
 Ответ
-```JSON
+```javascript
 {
   success : true, 
   secretKey : secretKey
 }
 ```
 В случае ошибки как пример
-```JSON
+```javascript
 {
   success : false, 
   reason : 'Need name', 
@@ -58,7 +58,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 - 311 - Необходима авторизация
 
 ####auth
-```JSON
+```javascript
 {
   action : 'auth',
   name   : 'nameSpace',
@@ -66,12 +66,12 @@ Fire Web Socket is a WebSocket server based on NodeJs
 }
 ```
 В случае успеха
-```JSON
+```javascript
 {success : true}
 ```
 
 ####emit
-```JSON
+```javascript
 {
   action  : 'emit',
   channel : 'nameChannel',
@@ -81,7 +81,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ```
 
 ####set
-```JSON
+```javascript
 {
   action   : 'set',
   channel  : 'channelName',
@@ -94,7 +94,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ```
 
 ####get
-```JSON
+```javascript
 {
   action  : 'get',
   channel : 'channelName',
@@ -105,14 +105,14 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ```
 
 ####channelInfo
-```JSON
+```javascript
 {
   action  : 'channelInfo',
   channel : 'channelName'
 }
 ```
 В случае успеха вернет
-```JSON
+```javascript
 {
   countUser : 1,
   countConnection : 1,
