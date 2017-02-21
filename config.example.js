@@ -1,5 +1,6 @@
 var path       = require('path');
 var settings = {
+    secretKey  : 'asd82nvakadfs',
     portWS     : 8080,
     hostWS     : '0.0.0.0',
     portNET    : 8085,
