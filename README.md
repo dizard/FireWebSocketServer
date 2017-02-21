@@ -18,7 +18,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 
 ## Команды
 
-#### registerNameSpace
+### registerNameSpace
 
 С этого начинается работа с сервером, мы региструем свой NameSpace и работаем в нем.
 
@@ -57,7 +57,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 - 404 - Name space не найден
 - 311 - Необходима авторизация
 
-#### auth
+### auth
 ```javascript
 {
   "action" : 'auth',
@@ -70,7 +70,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 {"success" : true}
 ```
 
-#### emit
+### emit
 ```javascript
 {
   "action"  : 'emit',
@@ -80,7 +80,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 }
 ```
 
-#### set
+### set
 ```javascript
 {
   "action"   : 'set',
@@ -93,7 +93,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
   }
 ```
 
-#### get
+### get
 ```javascript
 {
   "action"  : 'get',
@@ -104,7 +104,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 }
 ```
 
-#### channelInfo
+### channelInfo
 ```javascript
 {
   "action"  : 'channelInfo',
