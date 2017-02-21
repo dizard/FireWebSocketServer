@@ -174,11 +174,11 @@ WS_Server.on('connection', (connection) => {
 
         if(channel[0]=='@') {
             return Store.load(conn.siteId, channel, conn.userId, (data) => {
-                conn.write(channel, data);
+                if (data) conn.write(channel, data);
             })
         }
         return Store.load(conn.siteId, channel, null, (data) => {
-            conn.write(channel, data);
+            if (data) conn.write(channel, data);
         })
     });
 
@@ -217,13 +217,19 @@ WS_Server.on('connection', (connection) => {
 });
 WS_Server.sendToChannel = (siteId, channel, data, params) => {
     debug('sendToChannel: siteId:%s channel:%o data:%s params:%o', siteId, channel, data, params);
+    if (!Store.NS_CHANNEL_USER[siteId]) return;
+    if (!Store.NS_CHANNEL_USER[siteId][channel]) return;
+
     if (params.userId) {
-        return Object.keys(Store.NS_CHANNEL_USER[siteId][channel][userId]).filter(function (connId) {
-            Store.NS_CHANNEL_USER[siteId][channel][userId][connId].write(channel, data);
+        if (!Store.NS_CHANNEL_USER[siteId][channel][params.userId]) return;
+        return Object.keys(Store.NS_CHANNEL_USER[siteId][channel][params.userId]).filter((connId) => {
+            Store.NS_CHANNEL_USER[siteId][channel][params.userId][connId].write(channel, data);
         })
     }
-    return Object.keys(Store.NS_CHANNEL_USER[siteId][channel]).filter(function (userId) {
-        Object.keys(Store.NS_CHANNEL_USER[siteId][channel][userId]).filter(function (connId) {
+    return Object.keys(Store.NS_CHANNEL_USER[siteId][channel]).filter((userId) => {
+        if (!Store.NS_CHANNEL_USER[siteId][channel][userId]) return;
+
+        Object.keys(Store.NS_CHANNEL_USER[siteId][channel][userId]).filter((connId) => {
             Store.NS_CHANNEL_USER[siteId][channel][userId][connId].write(channel, data);
         })
     });
