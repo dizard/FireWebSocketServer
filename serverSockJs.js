@@ -227,8 +227,6 @@ WS_Server.sendToChannel = (siteId, channel, data, params) => {
         })
     }
     return Object.keys(Store.NS_CHANNEL_USER[siteId][channel]).filter((userId) => {
-        if (!Store.NS_CHANNEL_USER[siteId][channel][userId]) return;
-
         Object.keys(Store.NS_CHANNEL_USER[siteId][channel][userId]).filter((connId) => {
             Store.NS_CHANNEL_USER[siteId][channel][userId][connId].write(channel, data);
         })
