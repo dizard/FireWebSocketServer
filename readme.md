@@ -22,7 +22,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 
 С этого начинается работа с сервером, мы региструем свой NameSpace и работаем в нем.
 
-```json
+```javascript
 {
   action : 'registerNameSpace',
   name : 'name NameSpace',
@@ -33,14 +33,14 @@ Fire Web Socket is a WebSocket server based on NodeJs
 - name - Название Name Space
 
 Ответ
-```json
+```javascript
 {
   success : true, 
   secretKey : secretKey
 }
 ```
 В случае ошибки как пример
-```json
+```javascript
 {
   success : false, 
   reason : 'Need name', 
@@ -58,7 +58,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 - 311 - Необходима авторизация
 
 ####auth
-```json
+```javascript
 {
   action : 'auth',
   name   : 'nameSpace',
@@ -66,12 +66,12 @@ Fire Web Socket is a WebSocket server based on NodeJs
 }
 ```
 В случае успеха
-```json
+```javascript
 {success : true}
 ```
 
 ####emit
-```json
+```javascript
 {
   action  : 'emit',
   channel : 'nameChannel',
@@ -81,7 +81,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ```
 
 ####set
-```json
+```javascript
 {
   action   : 'set',
   channel  : 'channelName',
@@ -94,7 +94,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ```
 
 ####get
-```json
+```javascript
 {
   action  : 'get',
   channel : 'channelName',
@@ -105,14 +105,14 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ```
 
 ####channelInfo
-```json
+```javascript
 {
   action  : 'channelInfo',
   channel : 'channelName'
 }
 ```
 В случае успеха вернет
-```json
+```javascript
 {
   countUser : 1,
   countConnection : 1,
