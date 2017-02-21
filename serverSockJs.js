@@ -245,22 +245,25 @@ WS_Server.getBaseState = (siteId, channel, params, clb) => {
     });
 };
 WS_Server.channelInfo = (siteId, channel, clb) => {
-    // TODO
+    debug('WS_Server.channelInfo siteId:%s ,channel:%s', siteId, channel);
+
     let countUser = 0,
         countConnections = 0,
-        listConnection = [];
+        listConnection = {};
+    if (!Store.NS_CHANNEL_USER[siteId]) return clb(false);
+    if (!Store.NS_CHANNEL_USER[siteId][channel]) return clb(false);
 
-    Object.keys(Store.WS_Server[siteId][channel]).filter((userId) => {
+    Object.keys(Store.NS_CHANNEL_USER[siteId][channel]).filter((userId) => {
         countUser++;
-        countUser += Object.keys(Store.WS_Server[siteId][channel][userId]).length;
-        Object.keys(Store.WS_Server[siteId][channel][userId]).filter((connId) => {
+        Object.keys(Store.NS_CHANNEL_USER[siteId][channel][userId]).filter((connId) => {
+            countConnections++;
             listConnection[connId] = userId;
         });
     });
     return clb({
         'countUser' : countUser,
         'countConnection' : countConnections,
-        'listConnId_UserId' : listConnection
+        'connId_UserId' : listConnection
     });
 };
 
