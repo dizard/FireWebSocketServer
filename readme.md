@@ -1,7 +1,5 @@
 # Fire Web Socket
 
-Fire Web Socket - Web Socket Server + Store
-
-
+Fire Web Socket is a WebSocket server based on NodeJs
 
 
