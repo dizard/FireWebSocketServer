@@ -24,9 +24,9 @@ Fire Web Socket is a WebSocket server based on NodeJs
 
 ```javascript
 {
-  action : 'registerNameSpace',
-  name : 'name NameSpace',
-  key : 'secret key'
+  "action" : 'registerNameSpace',
+  "name" : 'name NameSpace',
+  "key" : 'secret key'
 }
 ```
 - key - Секретный ключ задается в конфиге сервера
@@ -35,16 +35,16 @@ Fire Web Socket is a WebSocket server based on NodeJs
 Ответ
 ```javascript
 {
-  success : true, 
-  secretKey : secretKey
+  "success" : true, 
+  "secretKey" : secretKey
 }
 ```
 В случае ошибки как пример
 ```javascript
 {
-  success : false, 
-  reason : 'Need name', 
-  code: 300
+  "success" : false, 
+  "reason" : 'Need name', 
+  "code" : 300
 }
 ```
 
@@ -60,46 +60,46 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ####auth
 ```javascript
 {
-  action : 'auth',
-  name   : 'nameSpace',
-  sKey   : 'sKey'
+  "action" : 'auth',
+  "name"   : 'nameSpace',
+  "sKey"   : 'sKey'
 }
 ```
 В случае успеха
 ```javascript
-{success : true}
+{"success" : true}
 ```
 
 ####emit
 ```javascript
 {
-  action  : 'emit',
-  channel : 'nameChannel',
-  data    : 'data...',
-  userId  : 3 // не обязательный аргумент, если нужно отправить сообщение конкретному пользователю
+  "action"  : 'emit',
+  "channel" : 'nameChannel',
+  "data"    : 'data...',
+  "userId"  : 3 // не обязательный аргумент, если нужно отправить сообщение конкретному пользователю
 }
 ```
 
 ####set
 ```javascript
 {
-  action   : 'set',
-  channel  : 'channelName',
-  data     : 'data...',
-  params : {
-    userId : 1, // не обязательный параметр если мы хотим установить состояние канала для конкретного пользователя
-    emit   : false, // Отправить новое состоние 
-    ttl    : 10 // Не обязательный параметр, указывает время жизни сохраняемого состояния
+  "action"   : 'set',
+  "channel"  : 'channelName',
+  "data"     : 'data...',
+  "params" : {
+    "userId" : 1, // не обязательный параметр если мы хотим установить состояние канала для конкретного пользователя
+    "emit"   : false, // Отправить новое состоние 
+    "ttl"    : 10 // Не обязательный параметр, указывает время жизни сохраняемого состояния
   }
 ```
 
 ####get
 ```javascript
 {
-  action  : 'get',
-  channel : 'channelName',
-  params  : {
-    userId : 1 // Не обязательный параметр, если хотим получить состояния пользовательского канала
+  "action"  : 'get',
+  "channel" : 'channelName',
+  "params"  : {
+    "userId" : 1 // Не обязательный параметр, если хотим получить состояния пользовательского канала
   }
 }
 ```
@@ -107,16 +107,16 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ####channelInfo
 ```javascript
 {
-  action  : 'channelInfo',
-  channel : 'channelName'
+  "action"  : 'channelInfo',
+  "channel" : 'channelName'
 }
 ```
 В случае успеха вернет
 ```javascript
 {
-  countUser : 1,
-  countConnection : 1,
-  connId_UserId : {
+  "countUser" : 1,
+  "countConnection" : 1,
+  "connId_UserId" : {
     'asd98enYasffs-sdfjksf' : 2
   }
 }
