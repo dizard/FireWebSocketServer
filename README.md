@@ -85,7 +85,9 @@ Fire Web Socket is a WebSocket server based on NodeJs
   "action"  : 'emit',
   "channel" : 'nameChannel',
   "data"    : 'data...',
-  "userId"  : 3 // не обязательный аргумент, если нужно отправить сообщение конкретному пользователю
+  "params"  : {
+    "userId"  : 3 // не обязательный аргумент, если нужно отправить сообщение конкретному пользователю
+  }
 }
 ```
 
