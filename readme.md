@@ -14,7 +14,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 - [Отправка сообщения](#emit)
 - [Установка базового состояния канала](#set)
 - [Получение базового состояния канала](#get)
-- [Получение информации о канале](#channelInfo)
+- [Получение информации о канале](#channelinfo)
 
 
 #### Формат протокола для работы с NET сервером
@@ -109,6 +109,29 @@ Fire Web Socket is a WebSocket server based on NodeJs
   "channel" : 'channelName',
   "params"  : {
     "userId" : 1 // Не обязательный параметр, если хотим получить состояния пользовательского канала
+  }
+}
+```
+
+### subscribe
+подписывает на приватный канал пользователя, имена приватных каналов должны начинаться с #
+```javascript
+{
+  "action"  : 'subscribe',
+  "channel" : '#channelName',
+  "params"  : {
+    "userId" : 1
+  }
+}
+```
+
+### unsubscribe
+```javascript
+{
+  "action"  : 'unsubscribe',
+  "channel" : '#channelName',
+  "params"  : {
+    "userId" : 1
   }
 }
 ```
