@@ -4,7 +4,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 
 Имеет две части
  - Net Server - принимает сигналы управления
- - Web Socket Server - рассылает данные
+ - Web Socket Server - рассылает данные клиентам
  
 Для работы с Net сервером используется tcp коннект с бинарным протоколом обмена.
 
@@ -90,6 +90,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ```
 
 ### set
+Это данные которые получит пользователь как только подпишется на канал
 ```javascript
 {
   "action"   : 'set',
