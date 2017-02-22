@@ -13,7 +13,8 @@ const Store = {
     NS_USER: {}, // Name spaces - [siteId][userId][conn.id] = conn
     SecretKeys: {},
     PRIVATE: {}, //
-    NS_CHANNEL_USER : {}, // Name spaces - [siteId][channel][userId][conn.id] = conn
+    NS_CHANNEL_USER : {}, // Name spaces - [siteId][channel][userId][conn.id] = conn,
+    CACHE:{},
 
 
     save : function(siteId, channel, data, userId, ttl) {
@@ -319,7 +320,7 @@ WS_Server.unsubscribeChannel = (siteId, channel, params) => {
 //================================
 // Command reciver
 const NET_Server = require('net').createServer(function (sock) {
-    var outstandingData;
+    let outstandingData;
 
     sock.on('error', function (data) {
     });
@@ -331,7 +332,7 @@ const NET_Server = require('net').createServer(function (sock) {
             outstandingData = null;
         }
         if (data.length) {
-            var len = data.readInt32LE(0);
+            let len = data.readInt32LE(0);
             if (!len) return;
             if (len >= 1 && data.length >= len + 5) {
                 data = data.slice(4, len + 4);
@@ -360,14 +361,23 @@ const NET_Server = require('net').createServer(function (sock) {
                         if (!oData.hasOwnProperty('name')) return sendData(sock, {'success' : false, reason : 'Need name - name space', code: 300});
                         if (!oData.hasOwnProperty('sKey')) return sendData(sock, {'success' : false, reason : 'Need sKey - secret key',code: 300});
 
-                        return RedisClient.get('LaWS_Server:name_spaces:'+oData.name, function(err, sKey) {
-                            if (err) return sendData(sock, {'success' : false, reason : 'Error store, try latter...', code: 302});
-                            if (!sKey) return sendData(sock, {'success' : false, reason : 'Name space not found', code : 404});
+                        let key = 'LaWS_Server:name_spaces:'+oData.name;
+                        if (Store.CACHE.hasOwnProperty(key)) {
+                            let sKey = Store.CACHE[key];
                             if (oData.sKey!=sKey) return sendData(sock, {'success' : false, reason : 'Invalid sKey', code: 305});
                             sock.auth = true;
                             sock.siteId = oData.name;
                             return sendData(sock, {'success' : true});
-                        });
+                        }else{
+                            return RedisClient.get(key, function(err, sKey) {
+                                if (err) return sendData(sock, {'success' : false, reason : 'Error store, try latter...', code: 302});
+                                if (!sKey) return sendData(sock, {'success' : false, reason : 'Name space not found', code : 404});
+                                if (oData.sKey!=sKey) return sendData(sock, {'success' : false, reason : 'Invalid sKey', code: 305});
+                                sock.auth = true;
+                                sock.siteId = oData.name;
+                                return sendData(sock, {'success' : true});
+                            });
+                        }
                     }
 
 
