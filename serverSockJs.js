@@ -375,6 +375,7 @@ const NET_Server = require('net').createServer(function (sock) {
                                 if (oData.sKey!=sKey) return sendData(sock, {'success' : false, reason : 'Invalid sKey', code: 305});
                                 sock.auth = true;
                                 sock.siteId = oData.name;
+                                Store.CACHE[key] = sKey;
                                 return sendData(sock, {'success' : true});
                             });
                         }
