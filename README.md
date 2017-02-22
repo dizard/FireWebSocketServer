@@ -113,6 +113,29 @@ Fire Web Socket is a WebSocket server based on NodeJs
 }
 ```
 
+### subscribe
+подписывает на приватный канал пользователя, имена приватных каналов должны начинаться с #
+```javascript
+{
+  "action"  : 'subscribe',
+  "channel" : '#channelName',
+  "params"  : {
+    "userId" : 1
+  }
+}
+```
+
+### unsubscribe
+```javascript
+{
+  "action"  : 'unsubscribe',
+  "channel" : '#channelName',
+  "params"  : {
+    "userId" : 1
+  }
+}
+```
+
 ### channelInfo
 ```javascript
 {
