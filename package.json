@@ -2,10 +2,8 @@
   "name": "Fire Web Socket Server",
   "dependencies": {
     "debug": "2.3.3",
-    "async": "*",
     "ioredis": "*",
     "node-uuid": "*",
-    "redis": "*",
     "sockjs": "*",
     "json-web-token": "*"
   }
