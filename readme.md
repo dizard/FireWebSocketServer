@@ -30,6 +30,8 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ### registerNameSpace
 
 С этого начинается работа с сервером, мы региструем свой NameSpace и работаем в нем.
+В ответ получаем secretKey его нужно сохранить так как дальше он будет нужен для работы
+с зарегистрированным NameSpace.
 
 ```javascript
 {
@@ -45,7 +47,7 @@ Fire Web Socket is a WebSocket server based on NodeJs
 ```javascript
 {
   "success" : true, 
-  "secretKey" : secretKey
+  "secretKey" : secretKey // Его нужно сохранить
 }
 ```
 В случае ошибки как пример
