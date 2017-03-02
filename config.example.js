@@ -1,6 +1,6 @@
 var path       = require('path');
 var settings = {
-    secretKey  : 'asd82nvakadfs',
+    secretKey  : process.env.FWS_SECRETKEY || 'asd82nvakadfs',
     portWS     : 8080,
     hostWS     : '0.0.0.0',
     portNET    : 8085,
@@ -9,7 +9,6 @@ var settings = {
 //    sslKey     : '/etc/apache2/ssl/apache.key',
 //    sslCert    : '/etc/apache2/ssl/apache.crt',
     path       : path.normalize(path.join(__dirname, '..')),
-    port       : process.env.NODE_PORT || 3000,
 //    workers    : 1,//require('os').cpus().length,
     redis : {
 //		cluster : [{
