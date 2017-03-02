@@ -1,5 +1,11 @@
 # Fire Web Socket
 
+Docker Container: **dizard/fire-ws**
+```
+docker pull dizard/fire-ws:1.0
+docker run -itd --name fire-ws  -p 80:8080 -p 0085:8085 dizard/fire-ws:1.0
+```
+
 Fire Web Socket is a WebSocket server based on NodeJs
 
 
