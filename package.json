@@ -1,6 +1,6 @@
 {
   "name": "FireWebSocketServer",
-  "version": "1.0",
+  "version": "1.0.0-beta.1",
   "description": "Web Socket Server",
   "main": "serverSockJs.js",
   "author": "Mikhail Mankov",
