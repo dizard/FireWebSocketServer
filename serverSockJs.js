@@ -72,11 +72,15 @@ const http = require('http');
 const SockJs = require('sockjs');
 const WS_Server = SockJs.createServer();
 
-WS_Server.installHandlers(http.createServer().listen(Config.portWS, Config.hostWS), {
+WS_Server.installHandlers(http.createServer().on('listening', function () {
+    console.info('WS_Server STARTED', this.address());
+    console.info('SecretKey', Config.secretKey);
+}).listen(Config.portWS, Config.hostWS), {
     prefix: '/socket', log: function logger(severity, message) {
         if (severity == "error") console.error(message);
     }
 });
+
 
 const EventEmitter = require('events');
 class Connection extends EventEmitter {
@@ -464,5 +468,5 @@ const NET_Server = require('net').createServer(function (sock) {
         throw e;
     }
 }).on('listening', function () {
-    console.log('STARTED SUCCESS', this.address());
+    console.info('NET_Server STARTED', this.address());
 }).listen(Config.portNET, Config.hostNET);
