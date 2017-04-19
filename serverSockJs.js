@@ -342,6 +342,7 @@ const NET_Server = require('net').createServer(function (sock) {
                 data = data.slice(4, len + 4);
                 try{
                     let oData = JSON.parse(data);
+                    debug('income %o', oData);
                     if (!oData.hasOwnProperty('action')) return sendData(sock, {'success' : false, reason : 'Need action', code: 300});
 
                     // Региструет данный NameSpace в системе и отдает ключ шифрования
@@ -391,9 +392,8 @@ const NET_Server = require('net').createServer(function (sock) {
 
                         if (!oData.hasOwnProperty('channel')) return sendData(sock, {'success' : false, reason : 'Need argument channel', code: 300});
                         if (!oData.hasOwnProperty('data')) return sendData(sock, {'success' : false, reason : 'Need argument data', code: 300});
-
-                        WS_Server.sendToChannel(sock.siteId, oData.channel, oData.data, oData.params);
-                        return sendData(sock, {'success' : true});
+                        sendData(sock, {'success' : true});
+                        return WS_Server.sendToChannel(sock.siteId, oData.channel, oData.data, oData.params);
                     }
 
 
@@ -402,10 +402,8 @@ const NET_Server = require('net').createServer(function (sock) {
 
                         if (!oData.hasOwnProperty('channel')) return sendData(sock, {'success' : false, reason : 'Need argument channel', code: 300});
                         if (!oData.hasOwnProperty('data')) return sendData(sock, {'success' : false, reason : 'Need argument data', code: 300});
-
-                        WS_Server.setBaseState(sock.siteId, oData.channel, oData.data, oData.params);
-
-                        return sendData(sock, {'success' : true});
+                        sendData(sock, {'success' : true});
+                        return WS_Server.setBaseState(sock.siteId, oData.channel, oData.data, oData.params);
                     }
 
                     if (oData.action == 'get') {
@@ -455,6 +453,7 @@ const NET_Server = require('net').createServer(function (sock) {
 
                     return sendData(sock, {'success' : false, 'reason' : 'Invalid action...', code: 312});
                 }catch (e) {
+                    debug.error('%o', e);
                     sock.end();
                 }
             } else {
