@@ -243,9 +243,9 @@ WS_Server.on('connection', (connection) => {
         }
         return RedisClient.get('LaWS_Server:name_spaces:'+siteId, (err, secretKey) => {
             if (!secretKey) return conn.close(3404, 'site id not registered');
-            JWT.decode(secretKey, data.s, function (err, userId) {
-                if (err || !userId) return conn.close(3404, 'invalid JWT');
-                auth(conn, siteId, userId);
+            JWT.decode(secretKey, data.s, function (err, obj) {
+                if (err || !obj.i) return conn.close(3404, 'invalid JWT');
+                auth(conn, siteId, obj.i);
             })
         });
     });
