@@ -203,7 +203,7 @@ WS_Server.on('connection', (connection) => {
         if(channel[0]=='#') {
             if (!Store.PRIVATE[siteId]) return ;
             if (!Store.PRIVATE[siteId][channel]) return ;
-            if (!Store.PRIVATE[siteId][channel][params.userId]) return ;
+            if (!Store.PRIVATE[siteId][channel][conn.userId]) return ;
         }
         conn.join(channel);
 
