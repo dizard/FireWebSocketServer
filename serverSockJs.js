@@ -236,9 +236,9 @@ WS_Server.on('connection', (connection) => {
 
         if (Store.SecretKeys[siteId]) {
             let secretKey = Store.SecretKeys[siteId];
-            return JWT.decode(secretKey, data.s, function (err, userId) {
-                if (err || !userId) return conn.close(3404, 'invalid JWT');
-                auth(conn, siteId, userId);
+            return JWT.decode(secretKey, data.s, function (err, obj) {
+                if (err || !obj.i) return conn.close(3404, 'invalid JWT');
+                auth(conn, siteId, obj.i);
             })
         }
         return RedisClient.get('LaWS_Server:name_spaces:'+siteId, (err, secretKey) => {
