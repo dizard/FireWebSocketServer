@@ -343,73 +343,73 @@ const NET_Server = require('net').createServer(function (sock) {
                 try{
                     let oData = JSON.parse(data);
                     debug('income %o', oData);
-                    if (!oData.hasOwnProperty('action')) return sendData(sock, {'success' : false, reason : 'Need action', code: 300});
+                    if (!oData.hasOwnProperty('action')) return sendData(sock, {success : false, reason : 'Need action', code: 300});
 
                     // Региструет данный NameSpace в системе и отдает ключ шифрования
                     if (oData.action == 'registerNameSpace') {
-                        if (!oData.hasOwnProperty('name')) return sendData(sock, {'success' : false, reason : 'Need name', code: 300});
-                        if (!oData.hasOwnProperty('key')) return sendData(sock, {'success' : false, reason : 'Need key', code: 300});
-                        if (oData.key!=Config.secretKey) return sendData(sock, {'success' : false, reason : 'Invalid key', code: 306});
+                        if (!oData.hasOwnProperty('name')) return sendData(sock, {success : false, reason : 'Need name', code: 300});
+                        if (!oData.hasOwnProperty('key')) return sendData(sock, {success : false, reason : 'Need key', code: 300});
+                        if (oData.key!=Config.secretKey) return sendData(sock, {success : false, reason : 'Invalid key', code: 306});
 
                         return RedisClient.exists('LaWS_Server:name_spaces:'+oData.name, function(err, res) {
-                            if (err) return sendData(sock, {'success' : false, reason : 'Error store, try latter...', code: 302});
-                            if (res) return sendData(sock, {'success' : false, reason : 'Name space is busy', code: 309});
+                            if (err) return sendData(sock, {success : false, reason : 'Error store, try latter...', code: 302});
+                            if (res) return sendData(sock, {success : false, reason : 'Name space is busy', code: 309});
 
                             let secretKey = uuid.v4();
                             RedisClient.set('LaWS_Server:name_spaces:'+oData.name, secretKey);
-                            return sendData(sock, {'success' : true, secretKey : secretKey});
+                            return sendData(sock, {success : true, secretKey : secretKey});
                         });
                     }
 
                     // Авторизует соединение
                     if (oData.action == 'auth') {
-                        if (!oData.hasOwnProperty('name')) return sendData(sock, {'success' : false, reason : 'Need name - name space', code: 300});
-                        if (!oData.hasOwnProperty('sKey')) return sendData(sock, {'success' : false, reason : 'Need sKey - secret key',code: 300});
+                        if (!oData.hasOwnProperty('name')) return sendData(sock, {success : false, reason : 'Need name - name space', code: 300});
+                        if (!oData.hasOwnProperty('sKey')) return sendData(sock, {success : false, reason : 'Need sKey - secret key',code: 300});
 
                         let key = 'LaWS_Server:name_spaces:'+oData.name;
                         if (Store.CACHE.hasOwnProperty(key)) {
                             let sKey = Store.CACHE[key];
-                            if (oData.sKey!=sKey) return sendData(sock, {'success' : false, reason : 'Invalid sKey', code: 305});
+                            if (oData.sKey!=sKey) return sendData(sock, {success : false, reason : 'Invalid sKey', code: 305});
                             sock.auth = true;
                             sock.siteId = oData.name;
-                            return sendData(sock, {'success' : true});
+                            return sendData(sock, {success : true});
                         }else{
                             return RedisClient.get(key, function(err, sKey) {
-                                if (err) return sendData(sock, {'success' : false, reason : 'Error store, try latter...', code: 302});
-                                if (!sKey) return sendData(sock, {'success' : false, reason : 'Name space not found', code : 404});
-                                if (oData.sKey!=sKey) return sendData(sock, {'success' : false, reason : 'Invalid sKey', code: 305});
+                                if (err) return sendData(sock, {success : false, reason : 'Error store, try latter...', code: 302});
+                                if (!sKey) return sendData(sock, {success : false, reason : 'Name space not found', code : 404});
+                                if (oData.sKey!=sKey) return sendData(sock, {success : false, reason : 'Invalid sKey', code: 305});
                                 sock.auth = true;
                                 sock.siteId = oData.name;
                                 Store.CACHE[key] = sKey;
-                                return sendData(sock, {'success' : true});
+                                return sendData(sock, {success : true});
                             });
                         }
                     }
 
 
                     if (oData.action == 'emit') {
-                        if (sock.auth!==true) return sendData(sock, {'success' : false, reason : 'Need auth', code: 311});
+                        if (sock.auth!==true) return sendData(sock, {success : false, reason : 'Need auth', code: 311});
 
-                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {'success' : false, reason : 'Need argument channel', code: 300});
-                        if (!oData.hasOwnProperty('data')) return sendData(sock, {'success' : false, reason : 'Need argument data', code: 300});
-                        sendData(sock, {'success' : true});
+                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {success : false, reason : 'Need argument channel', code: 300});
+                        if (!oData.hasOwnProperty('data')) return sendData(sock, {success : false, reason : 'Need argument data', code: 300});
+                        sendData(sock, {success : true});
                         return WS_Server.sendToChannel(sock.siteId, oData.channel, oData.data, oData.params);
                     }
 
 
                     if (oData.action == 'set') {
-                        if (sock.auth!==true) return sendData(sock, {'success' : false, reason : 'Need auth', code: 311});
+                        if (sock.auth!==true) return sendData(sock, {success : false, reason : 'Need auth', code: 311});
 
-                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {'success' : false, reason : 'Need argument channel', code: 300});
-                        if (!oData.hasOwnProperty('data')) return sendData(sock, {'success' : false, reason : 'Need argument data', code: 300});
-                        sendData(sock, {'success' : true});
+                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {success : false, reason : 'Need argument channel', code: 300});
+                        if (!oData.hasOwnProperty('data')) return sendData(sock, {success : false, reason : 'Need argument data', code: 300});
+                        sendData(sock, {success : true});
                         return WS_Server.setBaseState(sock.siteId, oData.channel, oData.data, oData.params);
                     }
 
                     if (oData.action == 'get') {
-                        if (sock.auth!==true) return sendData(sock, {'success' : false, reason : 'Need auth', code: 311});
+                        if (sock.auth!==true) return sendData(sock, {success : false, reason : 'Need auth', code: 311});
 
-                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {'success' : false, reason : 'Need argument channel', code: 300});
+                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {success : false, reason : 'Need argument channel', code: 300});
 
                         return WS_Server.getBaseState(sock.siteId, oData.channel, oData.params, (data) => {
                             return sendData(sock, data);
@@ -417,9 +417,9 @@ const NET_Server = require('net').createServer(function (sock) {
                     }
 
                     if (oData.action == 'channelInfo') {
-                        if (sock.auth!==true) return sendData(sock, {'success' : false, reason : 'Need auth', code: 311});
+                        if (sock.auth!==true) return sendData(sock, {success : false, reason : 'Need auth', code: 311});
 
-                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {'success' : false, reason : 'Need argument channel', code: 300});
+                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {success : false, reason : 'Need argument channel', code: 300});
 
                         return WS_Server.channelInfo(sock.siteId, oData.channel, (data) => {
                             return sendData(sock, data);
@@ -427,31 +427,31 @@ const NET_Server = require('net').createServer(function (sock) {
                     }
 
                     if (oData.action == 'subscribe') {
-                        if (sock.auth!==true) return sendData(sock, {'success' : false, reason : 'Need auth', code: 311});
+                        if (sock.auth!==true) return sendData(sock, {success : false, reason : 'Need auth', code: 311});
 
-                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {'success' : false, reason : 'Need argument channel', code: 300});
-                        if (oData.channel[0]!=='#') return sendData(sock, {'success' : false, reason : 'Private channel must begin with #', code: 343});
+                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {success : false, reason : 'Need argument channel', code: 300});
+                        if (oData.channel[0]!=='#') return sendData(sock, {success : false, reason : 'Private channel must begin with #', code: 343});
 
-                        if (!oData.hasOwnProperty('params')) return sendData(sock, {'success' : false, reason : 'Need argument params', code: 300});
-                        if (!oData.params.hasOwnProperty('userId')) return sendData(sock, {'success' : false, reason : 'Need argument params.userId', code: 300});
+                        if (!oData.hasOwnProperty('params')) return sendData(sock, {success : false, reason : 'Need argument params', code: 300});
+                        if (!oData.params.hasOwnProperty('userId')) return sendData(sock, {success : false, reason : 'Need argument params.userId', code: 300});
 
                         WS_Server.subscribeChannel(sock.siteId, oData.channel, oData.params);
-                        return sendData(sock, {'success' : true});
+                        return sendData(sock, {success : true});
                     }
                     if (oData.action == 'unsubscribe') {
-                        if (sock.auth!==true) return sendData(sock, {'success' : false, reason : 'Need auth', code: 311});
+                        if (sock.auth!==true) return sendData(sock, {success : false, reason : 'Need auth', code: 311});
 
-                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {'success' : false, reason : 'Need argument channel', code: 300});
-                        if (oData.channel[0]!=='#') return sendData(sock, {'success' : false, reason : 'Private channel must begin with #', code: 343});
+                        if (!oData.hasOwnProperty('channel')) return sendData(sock, {success : false, reason : 'Need argument channel', code: 300});
+                        if (oData.channel[0]!=='#') return sendData(sock, {success : false, reason : 'Private channel must begin with #', code: 343});
 
-                        if (!oData.hasOwnProperty('params')) return sendData(sock, {'success' : false, reason : 'Need argument params', code: 300});
-                        if (!oData.params.hasOwnProperty('userId')) return sendData(sock, {'success' : false, reason : 'Need argument params.userId', code: 300});
+                        if (!oData.hasOwnProperty('params')) return sendData(sock, {success : false, reason : 'Need argument params', code: 300});
+                        if (!oData.params.hasOwnProperty('userId')) return sendData(sock, {success : false, reason : 'Need argument params.userId', code: 300});
 
                         WS_Server.unsubscribeChannel(sock.siteId, oData.channel, oData.params);
-                        return sendData(sock, {'success' : true});
+                        return sendData(sock, {success : true});
                     }
 
-                    return sendData(sock, {'success' : false, 'reason' : 'Invalid action...', code: 312});
+                    return sendData(sock, {success : false, 'reason' : 'Invalid action...', code: 312});
                 }catch (e) {
                     debug.error('%o', e);
                     sock.end();
