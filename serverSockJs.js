@@ -114,8 +114,8 @@ class Connection extends EventEmitter {
             this.emit('close', {});
             Object.keys(this.channels).filter((channel) => {
                 delete Store.NS_CHANNEL_USER[this.siteId][channel][this.userId][this.id];
-                if (Object.keys(Store.NS_CHANNEL_USER[this.siteId][channel][this.userId]).length==0) {
-                    delete Store.NS_CHANNEL_USER[this.siteId][channel];
+                if (Object.keys(Store.NS_CHANNEL_USER[this.siteId][channel][this.userId]).length===0) {
+                    delete Store.NS_CHANNEL_USER[this.siteId][channel][this.userId];
                 }
             });
         });
